@@ -570,7 +570,6 @@ function InsertEquationDialog({
     },
     [activeEditor, onClose],
   );
-
   return <KatexEquationAlterer onConfirm={onEquationConfirm} />;
 }
 
@@ -732,6 +731,9 @@ function Select({
 }
 
 
+
+var editorHandle;
+
 //
 //
 //
@@ -755,8 +757,11 @@ export default function ToolbarPlugin(): React$Node {
   //}, [])
 
 
-
   const [editor] = useLexicalComposerContext();
+
+  // document.editorHandle
+  document.editorHandle = editor;
+
   const [activeEditor, setActiveEditor] = useState(editor);
   const [blockType, setBlockType] = useState('paragraph');
   const [selectedElementKey, setSelectedElementKey] = useState(null);
@@ -959,8 +964,6 @@ export default function ToolbarPlugin(): React$Node {
     activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
   };
 
-
-
   // document.formatParagraph()
   document.formatParagraph = () => {
     if (blockType !== 'paragraph') {
@@ -1033,7 +1036,6 @@ export default function ToolbarPlugin(): React$Node {
     }
   };
 
-
   // document.toggleLink()
   document.toggleLink = () => {
     if (!isLink) {
@@ -1069,6 +1071,33 @@ export default function ToolbarPlugin(): React$Node {
   )
 
 
+
+
+  // HAVE TO CLICK!!!!!!
+  // document.insertEq(document.editorHandle)
+  //document.insertEq = function InsertEquationDialog({editor, onClose}: {editor: LexicalEditor, onClose: () => void}): React$Node {
+  //  const onEquationConfirm = useCallback(
+  //    (equation: string, inline: boolean) => {
+  //      editor.dispatchCommand(INSERT_EQUATION_COMMAND, { equation, inline });
+  //      onClose();
+  //    },
+  //    [editor, onClose],
+  //  );
+  //  return <KatexEquationAlterer onConfirm={onEquationConfirm} />;
+  //}
+
+
+
+  // document.equationButtonRef.current.click()
+  document.equationButtonRef = useRef(4);
+  document.equationButtonObject = () => (
+    <button ref={document.equationButtonRef}
+      className="item"
+      onClick={() => {
+        showModal('Insert Equation', (onClose) => (<InsertEquationDialog activeEditor={activeEditor} onClose={onClose} />));
+      }}>equ</button>
+  )
+
   // ----------------------------------------------------------------------------------------------------
   // ----------------------------------------------------------------------------------------------------
   // ----------------------------------------------------------------------------------------------------
@@ -1087,8 +1116,6 @@ export default function ToolbarPlugin(): React$Node {
 
 
   return (
-
-
     //<div className="toolbar" style={{ display: "none" }}>
     <div className="toolbar">
 
@@ -1096,6 +1123,7 @@ export default function ToolbarPlugin(): React$Node {
       {document.testButtonObject()}
       {document.tableButtonObject()}
       {document.imageButtonObject()}
+      {document.equationButtonObject()}
 
 
       <button
