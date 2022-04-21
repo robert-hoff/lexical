@@ -411,6 +411,7 @@ function InsertImageDialog({
   );
 }
 
+// -- insert table dialog
 function InsertTableDialog({
   activeEditor,
   onClose,
@@ -418,8 +419,8 @@ function InsertTableDialog({
   activeEditor: LexicalEditor,
   onClose: () => void,
 }): React$Node {
-  const [rows, setRows] = useState('5');
-  const [columns, setColumns] = useState('5');
+  const [rows, setRows] = useState('4');
+  const [columns, setColumns] = useState('4');
 
   const onClick = () => {
     activeEditor.dispatchCommand(INSERT_TABLE_COMMAND, {columns, rows});
@@ -626,7 +627,6 @@ function BlockFormatDropDown({
     if (blockType !== 'quote') {
       editor.update(() => {
         const selection = $getSelection();
-
         if ($isRangeSelection(selection)) {
           $wrapLeafNodesInElements(selection, () => $createQuoteNode());
         }
@@ -731,7 +731,31 @@ function Select({
   );
 }
 
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// ------------------------------ TOOLBAR ---------------------------------------------------
+// ------------------------------------------------------------------------------------------
+
 export default function ToolbarPlugin(): React$Node {
+
+  // this may behave similar to componentDidMount()
+  //useEffect(() => {
+  //  console.log(document.getElementById("tableButton"));
+  //}, [])
+
+
+
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
   const [blockType, setBlockType] = useState('paragraph');
@@ -749,6 +773,8 @@ export default function ToolbarPlugin(): React$Node {
   const [modal, showModal] = useModal();
   const [isRTL, setIsRTL] = useState(false);
   const [codeLanguage, setCodeLanguage] = useState<string>('');
+
+
 
   const updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -895,8 +921,154 @@ export default function ToolbarPlugin(): React$Node {
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
   };
 
+  //
+  //
+  // LOOKS USEFUL
+  // https://reactjs.org/docs/hooks-reference.html
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  // ----------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------
+
+  // document.formatBold()
+  document.formatBold = () => {
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+  };
+
+  // document.formatItalic()
+  document.formatItalic = () => {
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+  };
+
+  // document.formatUnderline()
+  document.formatUnderline = () => {
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+  };
+
+  // document.formatParagraph()
+  document.formatParagraph = () => {
+    if (blockType !== 'paragraph') {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createParagraphNode());
+        }
+      });
+    }
+  };
+
+  // document.formatHeading1()
+  document.formatHeading1 = () => {
+    if (blockType !== 'h1') {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createHeadingNode('h1'));
+        }
+      });
+    }
+  };
+
+  // document.formatHeading2()
+  document.formatHeading2 = () => {
+    if (blockType !== 'h2') {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createHeadingNode('h2'));
+        }
+      });
+    }
+  };
+
+  // document.formatQuote()
+  document.formatQuote = () => {
+    if (blockType !== 'quote') {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createQuoteNode());
+        }
+      });
+    }
+  };
+
+  // document.toggleLink()
+  document.toggleLink = () => {
+    if (!isLink) {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, 'https://');
+    } else {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+    }
+  };
+
+  // document.testButtonDemo.current.click()
+  document.testButtonDemo = useRef(1);
+  document.testButtonObject = () => <button ref={document.testButtonDemo} onClick={() => { console.log("load!"); }}>test</button>
+
+
+  // document.tableButtonRef.current.click()
+  document.tableButtonRef = useRef(2);
+  document.tableButtonObject = () => (
+    <button ref={document.tableButtonRef}
+      className="item"
+      onClick={() => {
+        showModal('Insert Table', (onClose) => (<InsertTableDialog activeEditor={activeEditor} onClose={onClose} />));
+      }}>table</button>
+  )
+
+  // document.imageButtonRef.current.click()
+  document.imageButtonRef = useRef(3);
+  document.imageButtonObject = () => (
+    <button ref={document.imageButtonRef}
+      className="item"
+      onClick={() => {
+        showModal('Insert Image', (onClose) => (<InsertImageDialog activeEditor={activeEditor} onClose={onClose} />));
+      }}>img</button>
+  )
+
+
+  // ----------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+
   return (
+
+
+    //<div className="toolbar" style={{ display: "none" }}>
     <div className="toolbar">
+
+
+      {document.testButtonObject()}
+      {document.tableButtonObject()}
+      {document.imageButtonObject()}
+
+
       <button
         disabled={!canUndo}
         onClick={() => {
@@ -1040,20 +1212,23 @@ export default function ToolbarPlugin(): React$Node {
               className="item">
               <i className="icon horizontal-rule" />
               <span className="text">Horizontal Rule</span>
-            </button>
-            <button
-              onClick={() => {
-                showModal('Insert Image', (onClose) => (
-                  <InsertImageDialog
-                    activeEditor={activeEditor}
-                    onClose={onClose}
-                  />
-                ));
-              }}
-              className="item">
-              <i className="icon image" />
-              <span className="text">Image</span>
-            </button>
+              </button>
+
+            {/*<button*/}
+            {/*  onClick={() => {*/}
+            {/*    showModal('Insert Image', (onClose) => (*/}
+            {/*      <InsertImageDialog*/}
+            {/*        activeEditor={activeEditor}*/}
+            {/*        onClose={onClose}*/}
+            {/*      />*/}
+            {/*    ));*/}
+            {/*  }}*/}
+            {/*  className="item">*/}
+            {/*  <i className="icon image" />*/}
+            {/*  <span className="text">Image</span>*/}
+            {/*  </button>*/}
+
+
             <button
               onClick={() =>
                 insertGifOnClick({
@@ -1072,20 +1247,21 @@ export default function ToolbarPlugin(): React$Node {
               className="item">
               <i className="icon diagram-2" />
               <span className="text">Excalidraw</span>
-            </button>
-            <button
-              onClick={() => {
-                showModal('Insert Table', (onClose) => (
-                  <InsertTableDialog
-                    activeEditor={activeEditor}
-                    onClose={onClose}
-                  />
-                ));
-              }}
-              className="item">
-              <i className="icon table" />
-              <span className="text">Table</span>
-            </button>
+              </button>
+            {/*<button*/}
+            {/*  onClick={() => {*/}
+            {/*    showModal('Insert Table', (onClose) => (*/}
+            {/*      <InsertTableDialog*/}
+            {/*        activeEditor={activeEditor}*/}
+            {/*        onClose={onClose}*/}
+            {/*      />*/}
+            {/*    ));*/}
+            {/*  }}*/}
+            {/*  className="item">*/}
+            {/*  <i className="icon table" />*/}
+            {/*  <span className="text">Table</span>*/}
+              {/*</button>*/}
+
             <button
               onClick={() => {
                 showModal('Insert Poll', (onClose) => (

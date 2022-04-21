@@ -37,16 +37,15 @@ function App(): React$Node {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <SharedHistoryContext>
-        <header>
-          <a href="https://lexical.dev" target="_blank" rel="noopener">
-            <img src={logo} alt="Lexical Logo" />
-          </a>
-        </header>
         <div className="editor-shell">
           <Editor />
         </div>
-        <Settings />
-        {isDevPlayground && <TestRecorderPlugin />}
+        {/* these "settings" show as a button to the bottom-right */}
+        {/*<Settings/>*/}
+        {
+          // an annoying button at the bottom-right
+          //isDevPlayground && <TestRecorderPlugin />
+        }
         {measureTypingPerf && <TypingPerfPlugin />}
       </SharedHistoryContext>
     </LexicalComposer>

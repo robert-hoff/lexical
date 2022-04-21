@@ -18,6 +18,7 @@ export default function ContentEditable({
   className?: string,
 }): React$Node {
   return (
+    //<LexicalContentEditable className={className || 'ContentEditable__root'} spellCheck=false />
     <LexicalContentEditable className={className || 'ContentEditable__root'} />
   );
 }

@@ -21,20 +21,21 @@ export type SettingName =
 
 export type Settings = {[SettingName]: boolean};
 
-const hostName = window.location.hostname;
-export const isDevPlayground: boolean =
-  hostName !== 'playground.lexical.dev' &&
-  hostName !== 'lexical-playground.vercel.app';
+// $FlowExpectedError
+// const hostName = window.location.hostname;
+// export const isDevPlayground: boolean = hostName !== 'playground.lexical.dev' && hostName !== 'lexical-playground.vercel.app';
+export const isDevPlayground: boolean = false;
 
 export const DEFAULT_SETTINGS: Settings = {
   disableBeforeInput: false,
-  emptyEditor: isDevPlayground,
+  // emptyEditor: isDevPlayground, // if false here we get some content already supplied (deleted this)
+  emptyEditor: true,
   isAutocomplete: false,
   isCharLimit: false,
   isCharLimitUtf8: false,
   isCollab: false,
   isRichText: true,
   measureTypingPerf: false,
-  showNestedEditorTreeView: true,
+  showNestedEditorTreeView: false,
   showTreeView: true,
 };
