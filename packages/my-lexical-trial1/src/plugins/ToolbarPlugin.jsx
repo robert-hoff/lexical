@@ -954,6 +954,13 @@ export default function ToolbarPlugin(): React$Node {
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
   };
 
+  // document.formatCodeInline()
+  document.formatCodeInline = () => {
+    activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
+  };
+
+
+
   // document.formatParagraph()
   document.formatParagraph = () => {
     if (blockType !== 'paragraph') {
@@ -1004,6 +1011,28 @@ export default function ToolbarPlugin(): React$Node {
       });
     }
   };
+
+  // document.formatCodeBlock()
+  document.formatCodeBlock = () => {
+    if (blockType !== 'code') {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          if (selection.isCollapsed()) {
+            $wrapLeafNodesInElements(selection, () => $createCodeNode());
+          } else {
+            const textContent = selection.getTextContent();
+            const codeNode = $createCodeNode();
+            selection.removeText();
+            selection.insertNodes([codeNode]);
+            selection.insertRawText(textContent);
+          }
+        }
+      });
+    }
+  };
+
 
   // document.toggleLink()
   document.toggleLink = () => {
