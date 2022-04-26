@@ -169,7 +169,7 @@ export default function Editor(): React$Node {
         ref={scrollRef}>
         <AutoFocusPlugin />
         <LexicalClearEditorPlugin />
-        <MentionsPlugin />
+        {/*<MentionsPlugin />*/}
         <EmojisPlugin />
         <ExcalidrawPlugin />
         <HashtagsPlugin />
@@ -177,7 +177,7 @@ export default function Editor(): React$Node {
         <HorizontalRulePlugin />
         <SpeechToTextPlugin />
         <AutoLinkPlugin />
-        <CharacterStylesPopupPlugin />
+        {/* <CharacterStylesPopupPlugin />*/}
         <EquationsPlugin />
         <AutoScrollPlugin scrollRef={scrollRef} />
         {isRichText ? (
@@ -193,7 +193,7 @@ export default function Editor(): React$Node {
             )}
             <RichTextPlugin
               contentEditable={<ContentEditable />}
-              placeholder={placeholder}
+              placeholder=""
               initialEditorState={
                 isCollab ? null : emptyEditor ? undefined : prepopulatedRichText
               }
@@ -225,9 +225,11 @@ export default function Editor(): React$Node {
           <CharacterLimitPlugin charset={isCharLimit ? 'UTF-16' : 'UTF-8'} />
         )}
         {isAutocomplete && <AutocompletePlugin />}
-        <ActionsPlugin isRichText={isRichText} />
+        {/*<ActionsPlugin isRichText={isRichText} />*/}
       </div>
-      {showTreeView && <TreeViewPlugin />}
+      {
+        //showTreeView && <TreeViewPlugin />
+      }
     </>
   );
 }
