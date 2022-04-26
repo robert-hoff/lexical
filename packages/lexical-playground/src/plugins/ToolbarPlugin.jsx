@@ -913,8 +913,153 @@ export default function ToolbarPlugin(): React$Node {
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
   };
 
+
+
+
+  // exposing functionality by adding functions to the document object
+  // commands can be called as shown by typing them in the browser console Ctrl+J
+
+  // document.formatBold()
+  document.formatBold = () => {
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+  };
+
+  // document.formatItalic()
+  document.formatItalic = () => {
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+  };
+
+  // document.formatUnderline()
+  document.formatUnderline = () => {
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+  };
+
+  // document.formatCodeInline()
+  document.formatCodeInline = () => {
+    activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
+  };
+
+  // document.formatParagraph()
+  document.formatParagraph = () => {
+    if (blockType !== 'paragraph') {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createParagraphNode());
+        }
+      });
+    }
+  };
+
+  // document.formatHeading1()
+  document.formatHeading1 = () => {
+    if (blockType !== 'h1') {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createHeadingNode('h1'));
+        }
+      });
+    }
+  };
+
+  // document.formatHeading2()
+  document.formatHeading2 = () => {
+    if (blockType !== 'h2') {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createHeadingNode('h2'));
+        }
+      });
+    }
+  };
+
+  // document.formatQuote()
+  document.formatQuote = () => {
+    if (blockType !== 'quote') {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createQuoteNode());
+        }
+      });
+    }
+  };
+
+  // document.formatCodeBlock()
+  document.formatCodeBlock = () => {
+    if (blockType !== 'code') {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          if (selection.isCollapsed()) {
+            $wrapLeafNodesInElements(selection, () => $createCodeNode());
+          } else {
+            const textContent = selection.getTextContent();
+            const codeNode = $createCodeNode();
+            codeNode.setLanguage("clike");
+            selection.removeText();
+            selection.insertNodes([codeNode]);
+            selection.insertRawText(textContent);
+          }
+        }
+      });
+    }
+  };
+
+  // document.toggleLink()
+  document.toggleLink = () => {
+    if (!isLink) {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, 'https://');
+    } else {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+    }
+  };
+
+  // document.tableButtonRef.current.click()
+  document.tableButtonRef = useRef(2);
+  document.tableButtonObject = () => (
+    <button ref={document.tableButtonRef}
+      className="item"
+      onClick={() => {
+        showModal('Insert Table', (onClose) => (<InsertTableDialog activeEditor={activeEditor} onClose={onClose} />));
+      }}>table</button>
+  )
+
+  // document.imageButtonRef.current.click()
+  document.imageButtonRef = useRef(3);
+  document.imageButtonObject = () => (
+    <button ref={document.imageButtonRef}
+      className="item"
+      onClick={() => {
+        showModal('Insert Image', (onClose) => (<InsertImageDialog activeEditor={activeEditor} onClose={onClose} />));
+      }}>img</button>
+  )
+
+  // document.equationButtonRef.current.click()
+  document.equationButtonRef = useRef(4);
+  document.equationButtonObject = () => (
+    <button ref={document.equationButtonRef}
+      className="item"
+      onClick={() => {
+        showModal('Insert Equation', (onClose) => (<InsertEquationDialog activeEditor={activeEditor} onClose={onClose} />));
+      }}>equ</button>
+  )
+
+  const HIDE_TOOLBAR = true;
   return (
-    <div className="toolbar">
+    <div className="toolbar" style={{ display: HIDE_TOOLBAR ? "none" : "visible" }}>
+
+      {document.tableButtonObject()}
+      {document.imageButtonObject()}
+      {document.equationButtonObject()}
+
+
       <button
         disabled={!canUndo}
         onClick={() => {
