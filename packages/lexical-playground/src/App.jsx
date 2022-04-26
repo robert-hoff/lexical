@@ -19,7 +19,7 @@ import PlaygroundNodes from './nodes/PlaygroundNodes';
 import TestRecorderPlugin from './plugins/TestRecorderPlugin';
 import TypingPerfPlugin from './plugins/TypingPerfPlugin';
 import Settings from './Settings';
-import PlaygroundEditorTheme from './themes/PlaygroundEditorTheme';
+import NetLexicalTheme from './themes/NetLexicalTheme';
 
 function App(): React$Node {
   const {settings} = useSettings();
@@ -31,7 +31,7 @@ function App(): React$Node {
     onError: (error) => {
       throw error;
     },
-    theme: PlaygroundEditorTheme,
+    theme: NetLexicalTheme,
   };
 
   return (

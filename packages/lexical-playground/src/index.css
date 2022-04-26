@@ -11,16 +11,14 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular',
-    sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #eee;
-  padding: 0 20px;
+  background: #fff;
+  padding: 20px;
 }
 
 header {
-  max-width: 580px;
   margin: auto;
   position: relative;
   display: flex;
@@ -47,9 +45,9 @@ header h1 {
 }
 
 .editor-shell {
-  margin: 20px auto;
-  border-radius: 2px;
-  max-width: 1000px;
+/*  margin: 20px auto;*/
+/*  border-radius: 2px;*/
+/*  max-width: 1000px;*/
   color: #000;
   position: relative;
   line-height: 20px;
